@@ -13,20 +13,11 @@ export function createFrontendBaseReferenceAdapter(http: FinanceHttpClient, role
         const response = await http.get<Page<BaseOperationalUnit>>('/referencias/unidades-operacionais', { security: 'bearer', params: { page, page_size: pageSize, busca: search } });
         return { ...response.data, items: response.data.items.map((item) => ({ uuid: item.uuid, codigo: item.codigo, nome: item.nome })) };
       }
-      const params = { ativo: true, papel: roleByKind[kind] };
-      if (!search) {
-        const response = await http.get<Page<BasePerson>>('/pessoas', { security: 'bearer', params: { ...params, page, page_size: pageSize } });
-        return { ...response.data, items: response.data.items.map((item) => ({ uuid: item.uuid, nome: item.nome, descricao: item.nome_fantasia_apelido || item.cpf_cnpj })) };
-      }
-      // O backend-base pagina pessoas por papel, mas ainda não oferece busca textual nesse endpoint.
-      // O adaptador percorre as páginas autorizadas e aplica a busca sem expor essa limitação ao módulo.
-      const first = (await http.get<Page<BasePerson>>('/pessoas', { security: 'bearer', params: { ...params, page: 1, page_size: 100 } })).data;
-      const pageCount = Math.ceil(first.total / first.page_size);
-      const remaining = await Promise.all(Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) => http.get<Page<BasePerson>>('/pessoas', { security: 'bearer', params: { ...params, page: index + 2, page_size: 100 } })));
-      const term = search.toLocaleLowerCase('pt-BR');
-      const matches = [first.items, ...remaining.map((response) => response.data.items)].flat().filter((item) => [item.nome, item.nome_fantasia_apelido, item.cpf_cnpj].some((value) => value?.toLocaleLowerCase('pt-BR').includes(term)));
-      const start = (page - 1) * pageSize;
-      return { items: matches.slice(start, start + pageSize).map((item) => ({ uuid: item.uuid, nome: item.nome, descricao: item.nome_fantasia_apelido || item.cpf_cnpj })), total: matches.length, page, page_size: pageSize };
+      const response = await http.get<Page<BasePerson>>('/referencias/pessoas', {
+        security: 'bearer',
+        params: { papel: roleByKind[kind], busca: search, page, page_size: pageSize },
+      });
+      return { ...response.data, items: response.data.items.map((item) => ({ uuid: item.uuid, nome: item.nome, descricao: item.nome_fantasia_apelido || item.cpf_cnpj })) };
     },
   };
 }
