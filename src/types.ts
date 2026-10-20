@@ -31,13 +31,15 @@ export interface ParcelamentoPagarDetail extends Parcelamento { soma_valores_ori
 export interface ParcelamentoReceberDetail extends Parcelamento { valor_original_ativo: Money; valor_original_cancelado: Money; valor_aberto_estrutural: Money; quantidade_ativa: number; quantidade_cancelada: number; quantidade_vencida: number; parcelas: ContaReceber[] }
 export interface Transferencia { uuid: UUID; codigo: string; conta_origem_uuid: UUID; conta_origem_nome: string; conta_destino_uuid: UUID; conta_destino_nome: string; data_transferencia: string; valor: Money; descricao: string; documento: string; observacoes: string; status: string; motivo_cancelamento: string; pode_cancelar: boolean }
 export interface VisaoGeral { periodo_inicial: string; periodo_final: string; a_pagar_atual: Money; a_receber_atual: Money; pagamentos_no_periodo: Money; recebimentos_no_periodo: Money; contas_pagar_prioritarias: ContaPagar[]; contas_receber_prioritarias: ContaReceber[] }
-export interface LinhaFluxoCaixa { descricao: string; contraparte_nome: string | null; data: string; origem: string; origem_uuid: UUID; tipo_evento: string; natureza: string | null; afeta_saldo: boolean; valor: Money; saldo: Money; documento: string; status: string }
+export type NaturezaFluxoCaixa = 'ENTRADA' | 'SAIDA';
+export interface LinhaFluxoCaixa { descricao: string; contraparte_nome: string | null; data: string; origem: string; origem_uuid: UUID; tipo_evento: string; natureza: NaturezaFluxoCaixa | null; afeta_saldo: boolean; valor: Money; saldo: Money; documento: string; status: string }
 export interface FluxoCaixa { periodo_inicial: string; periodo_final: string | null; saldo_inicial: Money; total_entradas: Money; total_saidas: Money; saldo_final: Money; linhas: LinhaFluxoCaixa[] }
 export interface GrupoDre { plano_conta: PlanoConta; valor: Money; filhos: GrupoDre[] }
 export interface Dre { periodo_inicial: string | null; periodo_final: string | null; grupos: GrupoDre[] }
 export interface DreDetailItem { origem:string; origem_uuid:UUID; origem_codigo:string|null; tipo_evento:string; data_evento:string; descricao:string; valor:Money; plano_conta:PlanoConta; centro_custo:Record<string,unknown>|null; documento:string }
 export interface DreDetail { plano_conta:PlanoConta; periodo_inicial:string|null; periodo_final:string|null; centro_custo_uuid:UUID|null; items:DreDetailItem[]; total:number; page:number; page_size:number; valor_total:Money }
 export interface NavigationItem { label: string; to: string; permission: string }
+export interface NavigationGroup { id: string; label: string; items: NavigationItem[] }
 export type ExternalReferenceKind = 'fornecedor' | 'cliente' | 'vendedor' | 'unidade_operacional';
 export interface ExternalReference { uuid: UUID; codigo?: string; nome: string; descricao?: string }
 export interface ExternalReferenceRequest { kind: ExternalReferenceKind; page: number; pageSize: number; search?: string }

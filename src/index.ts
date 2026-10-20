@@ -11,4 +11,5 @@ export * from './frontend-base-adapter';
 export * from './integration';
 export * from './pages';
 export * from './routes';
+export * from './settings';
 import './styles.css';
