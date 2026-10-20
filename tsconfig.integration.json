@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["vite/client"],
+    "paths": {
+      "@base/*": ["../../projeto reutilizavel/frontend-react/src/*"],
+      "@/*": ["../../projeto reutilizavel/frontend-react/src/*"]
+    }
+  },
+  "include": ["integration/frontend-base-composition.tsx", "src"]
+}
